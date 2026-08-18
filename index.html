@@ -205,10 +205,85 @@
   .glyph-cell .char-placeholder{
     font-family:'Fraunces',serif;font-size:26px;color:var(--ink-faint);opacity:.35;
   }
-  .glyph-cell img{
-    max-width:62%;max-height:56%;object-fit:contain;filter:invert(1) brightness(1.6);
-    position:relative;z-index:1;
+  .glyph-cell .svg-preview{
+    width:62%;height:56%;position:relative;z-index:1;color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
   }
+  .glyph-cell .svg-preview svg{width:100%;height:100%;display:block;overflow:visible;}
+  .glyph-cell .svg-preview svg path,
+  .glyph-cell .svg-preview svg polygon,
+  .glyph-cell .svg-preview svg rect,
+  .glyph-cell .svg-preview svg circle,
+  .glyph-cell .svg-preview svg ellipse,
+  .glyph-cell .svg-preview svg polyline{
+    fill:currentColor !important;
+  }
+  .glyph-cell .svg-preview.broken{color:var(--danger);font-family:'IBM Plex Mono',monospace;font-size:10px;text-align:center;}
+
+  /* ---------- text preview ---------- */
+  .text-preview-input{
+    width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);
+    color:var(--ink);font-family:'Fraunces',serif;font-size:20px;padding:0 0 14px;
+  }
+  .text-preview-input:focus{outline:none;border-color:var(--brass-dim);}
+  .text-preview-box{
+    margin:24px;padding:36px 20px 0;
+    min-height:150px;
+    display:flex;align-items:flex-end;flex-wrap:wrap;gap:1px;
+    border-bottom:1.5px solid var(--brass-dim);
+    position:relative;
+  }
+  .text-preview-box::before{
+    content:'baseline';
+    position:absolute;left:0;bottom:-19px;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);
+    letter-spacing:0.08em;text-transform:uppercase;
+  }
+  .tp-glyph{height:76px;color:var(--ink);display:flex;align-items:flex-end;margin:0 3px 4px;}
+  .tp-glyph svg{height:100%;width:auto;display:block;}
+  .tp-glyph svg path, .tp-glyph svg polygon, .tp-glyph svg rect,
+  .tp-glyph svg circle, .tp-glyph svg ellipse, .tp-glyph svg polyline{fill:currentColor !important;}
+  .tp-missing{
+    height:76px;min-width:26px;display:flex;align-items:flex-end;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink-faint);
+    border-bottom:2px dashed var(--danger);margin:0 3px 4px;padding-bottom:2px;opacity:.6;
+  }
+  .tp-space{width:20px;height:76px;margin:0 3px 4px;}
+  .text-preview-empty{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-faint);
+    padding-bottom:14px;
+  }
+
+  /* ---------- kerning panel ---------- */
+  .kerning-panel{border-top:1px solid var(--line);padding:20px 24px 24px;}
+  .kerning-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .kerning-row label{
+    font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-faint);
+    min-width:170px;
+  }
+  .kerning-row input[type=range]{accent-color:var(--brass);flex:1;min-width:120px;max-width:260px;}
+  .kerning-row #trackingValue{color:var(--teal);min-width:32px;}
+  .pair-char{
+    width:44px;text-align:center;background:var(--bg-cell);border:1px solid var(--line);color:var(--ink);
+    padding:8px 0;font-family:'IBM Plex Mono',monospace;font-size:14px;border-radius:2px;
+  }
+  .pair-char:focus{outline:none;border-color:var(--brass-dim);}
+  .pair-value{
+    width:70px;background:var(--bg-cell);border:1px solid var(--line);color:var(--ink);
+    padding:8px 8px;font-family:'IBM Plex Mono',monospace;font-size:13px;border-radius:2px;
+  }
+  .pair-value:focus{outline:none;border-color:var(--brass-dim);}
+  .kerning-pair-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .pair-chip{
+    display:flex;align-items:center;gap:8px;background:var(--bg-cell);border:1px solid var(--line);
+    padding:6px 8px 6px 12px;border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:12px;
+  }
+  .pair-chip .pv{color:var(--teal);}
+  .pair-chip button{
+    background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:14px;line-height:1;
+    padding:2px 4px;
+  }
+  .pair-chip button:hover{color:var(--danger);}
   .glyph-cell.filled{background:#20241f;}
   .glyph-cell.filled .guide{opacity:.9;}
   .glyph-cell.filled::after{
@@ -306,6 +381,40 @@
 
     <div class="glyph-tabs" id="glyphTabs"></div>
     <div class="glyph-grid" id="glyphGrid"></div>
+
+    <div style="height:36px;"></div>
+
+    <div class="section-head" style="margin-bottom:20px;">
+      <div>
+        <div class="eyebrow">Preview langsung</div>
+        <h2 style="font-size:24px;">Coba ketik sesuatu</h2>
+      </div>
+      <p>Rangkaian huruf yang sudah kamu unggah, disusun jadi kalimat. Huruf yang belum diunggah tampil putus-putus.</p>
+    </div>
+    <div class="panel">
+      <div style="padding:20px 24px 0;">
+        <input type="text" id="textPreviewInput" class="text-preview-input" value="Aksara — Halo, dunia! 123" spellcheck="false">
+      </div>
+      <div class="text-preview-box" id="textPreviewBox"></div>
+
+      <div class="kerning-panel">
+        <div class="kerning-row">
+          <label>Jarak antar huruf (tracking)</label>
+          <input type="range" id="trackingSlider" min="-60" max="120" value="0" step="5">
+          <span class="mono" id="trackingValue">0</span>
+        </div>
+
+        <div class="kerning-row kerning-pair-form">
+          <label>Kerning pasangan huruf</label>
+          <input type="text" id="pairLeft" class="pair-char" maxlength="1" placeholder="A">
+          <input type="text" id="pairRight" class="pair-char" maxlength="1" placeholder="V">
+          <input type="number" id="pairValue" class="pair-value" value="-40" step="5">
+          <button class="btn btn-ghost" id="addPairBtn">+ Tambah</button>
+        </div>
+
+        <div class="kerning-pair-list" id="pairList"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -370,9 +479,35 @@ const TABS = [
 ];
 const ALL_CHARS = [...UPPER, ...LOWER, ...DIGITS, ...PUNCT_CHARS];
 
-/* char -> {svgText, objectUrl} */
+/* char -> {svgText, previewSvg} */
 const glyphStore = {};
 let activeTab = 'upper';
+
+/* Normalisasi SVG untuk preview inline: pastikan ada viewBox, buang width/height
+   fixed yang bisa bikin ukuran aneh, dan pastikan tetap render meski SVG punya
+   <style>/gradient/atribut yang bikin <img src=blob> gagal render. */
+function sanitizeSvgForPreview(svgText){
+  try{
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgText, 'image/svg+xml');
+    const svgEl = doc.querySelector('svg');
+    if(!svgEl || doc.querySelector('parsererror')) return null;
+
+    if(!svgEl.getAttribute('viewBox')){
+      const w = parseFloat(svgEl.getAttribute('width')) || 100;
+      const h = parseFloat(svgEl.getAttribute('height')) || 100;
+      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    }
+    svgEl.removeAttribute('width');
+    svgEl.removeAttribute('height');
+    svgEl.setAttribute('width', '100%');
+    svgEl.setAttribute('height', '100%');
+    svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    return svgEl.outerHTML;
+  }catch(e){
+    return null;
+  }
+}
 
 /* ================= filename -> char ================= */
 function filenameToChar(filename){
@@ -413,9 +548,16 @@ function renderGrid(){
     cell.append(cap, xh, base);
 
     if(filled){
-      const img = document.createElement('img');
-      img.src = glyphStore[ch].objectUrl;
-      cell.appendChild(img);
+      const previewSvg = glyphStore[ch].previewSvg;
+      const holder = document.createElement('div');
+      if(previewSvg){
+        holder.className = 'svg-preview';
+        holder.innerHTML = previewSvg;
+      } else {
+        holder.className = 'svg-preview broken';
+        holder.textContent = 'SVG tidak valid';
+      }
+      cell.appendChild(holder);
     } else {
       const ph = document.createElement('div');
       ph.className = 'char-placeholder';
@@ -440,6 +582,7 @@ function updateProgress(){
   document.getElementById('progressLabel').textContent = `${filled} dari ${total} karakter`;
   document.getElementById('statFilled').textContent = `${filled}/${total}`;
   document.getElementById('generateBtn').disabled = filled === 0;
+  if(typeof renderTextPreview === 'function') renderTextPreview();
 }
 
 /* ================= upload handling ================= */
@@ -467,8 +610,8 @@ function handleFiles(fileList){
     const reader = new FileReader();
     reader.onload = ()=>{
       const svgText = reader.result;
-      const blob = new Blob([svgText], {type:'image/svg+xml'});
-      glyphStore[ch] = { svgText, objectUrl: URL.createObjectURL(blob) };
+      const previewSvg = sanitizeSvgForPreview(svgText);
+      glyphStore[ch] = { svgText, previewSvg };
       renderGrid();
       updateProgress();
     };
@@ -478,6 +621,101 @@ function handleFiles(fileList){
     showToast(`${unmatched.length} file dilewati — nama tidak dikenali (mis. "${unmatched[0]}")`);
   }
 }
+
+/* ================= kerning state ================= */
+let trackingValue = 0;         // font units, ditambahkan ke advance width tiap glyph
+const kerningPairs = {};       // "A|V" -> font units (negatif = lebih rapat)
+const PX_PER_UNIT = 76 / 1000; // konversi kasar unit font (unitsPerEm=1000) -> px preview
+
+/* ================= text preview ================= */
+const textPreviewInput = document.getElementById('textPreviewInput');
+const textPreviewBox = document.getElementById('textPreviewBox');
+
+function renderTextPreview(){
+  const text = textPreviewInput.value;
+  textPreviewBox.innerHTML = '';
+
+  if(!text.length){
+    const empty = document.createElement('div');
+    empty.className = 'text-preview-empty';
+    empty.textContent = 'Ketik sesuatu di atas untuk melihat previewnya di sini';
+    textPreviewBox.appendChild(empty);
+    return;
+  }
+
+  let prevChar = null;
+  Array.from(text).forEach(ch=>{
+    let extraPx = trackingValue * PX_PER_UNIT;
+    if(prevChar){
+      const key = prevChar + '|' + ch;
+      if(kerningPairs[key] !== undefined) extraPx += kerningPairs[key] * PX_PER_UNIT;
+    }
+    const leftMargin = Math.max(0, 3 + extraPx) + 'px';
+
+    if(ch === ' '){
+      const sp = document.createElement('div');
+      sp.className = 'tp-space';
+      sp.style.marginLeft = leftMargin;
+      textPreviewBox.appendChild(sp);
+      prevChar = ch;
+      return;
+    }
+    const data = glyphStore[ch];
+    if(data && data.previewSvg){
+      const holder = document.createElement('div');
+      holder.className = 'tp-glyph';
+      holder.style.marginLeft = leftMargin;
+      holder.innerHTML = data.previewSvg;
+      textPreviewBox.appendChild(holder);
+    } else {
+      const holder = document.createElement('div');
+      holder.className = 'tp-missing';
+      holder.style.marginLeft = leftMargin;
+      holder.textContent = ch;
+      holder.title = 'Belum ada SVG untuk karakter ini';
+      textPreviewBox.appendChild(holder);
+    }
+    prevChar = ch;
+  });
+}
+textPreviewInput.addEventListener('input', renderTextPreview);
+
+/* ================= kerning controls ================= */
+const trackingSlider = document.getElementById('trackingSlider');
+const trackingValueLabel = document.getElementById('trackingValue');
+trackingSlider.addEventListener('input', ()=>{
+  trackingValue = parseInt(trackingSlider.value, 10);
+  trackingValueLabel.textContent = trackingValue;
+  renderTextPreview();
+});
+
+const pairList = document.getElementById('pairList');
+function renderPairList(){
+  pairList.innerHTML = '';
+  Object.entries(kerningPairs).forEach(([key, val])=>{
+    const [l, r] = key.split('|');
+    const chip = document.createElement('div');
+    chip.className = 'pair-chip';
+    chip.innerHTML = `<span>${l}${r}</span><span class="pv">${val>0?'+':''}${val}</span>`;
+    const del = document.createElement('button');
+    del.textContent = '×';
+    del.onclick = ()=>{ delete kerningPairs[key]; renderPairList(); renderTextPreview(); };
+    chip.appendChild(del);
+    pairList.appendChild(chip);
+  });
+}
+
+document.getElementById('addPairBtn').addEventListener('click', ()=>{
+  const l = document.getElementById('pairLeft').value;
+  const r = document.getElementById('pairRight').value;
+  const v = parseInt(document.getElementById('pairValue').value, 10) || 0;
+  if(!l || !r){ showToast('Isi dua huruf yang mau diatur pasangannya'); return; }
+  kerningPairs[l + '|' + r] = v;
+  renderPairList();
+  renderTextPreview();
+  document.getElementById('pairLeft').value = '';
+  document.getElementById('pairRight').value = '';
+});
 
 /* ================= toast ================= */
 let toastTimer;
@@ -559,6 +797,8 @@ function buildGlyphFromContours(contours, unicode, name){
     advanceWidth = 320;
   }
 
+  advanceWidth = Math.max(60, advanceWidth + trackingValue);
+
   return new opentype.Glyph({
     name, unicode, advanceWidth, path
   });
@@ -595,8 +835,17 @@ function generateFont(){
       descender:DESCENDER,
       glyphs
     });
+
+    font.kerningPairs = {};
+    Object.entries(kerningPairs).forEach(([key, val])=>{
+      const [l, r] = key.split('|');
+      const li = font.charToGlyphIndex(l);
+      const ri = font.charToGlyphIndex(r);
+      if(li && ri){ font.kerningPairs[`${li},${ri}`] = val; }
+    });
+
     font.download(familyName.replace(/\s+/g,'') + '.ttf');
-    showToast(`${familyName}.ttf diunduh — ${Object.keys(glyphStore).length} glyph terisi`);
+    showToast(`${familyName}.ttf diunduh — ${Object.keys(glyphStore).length} glyph, ${Object.keys(kerningPairs).length} pasangan kerning`);
   }catch(err){
     console.error(err);
     showToast('Gagal generate font — cek console untuk detail');
